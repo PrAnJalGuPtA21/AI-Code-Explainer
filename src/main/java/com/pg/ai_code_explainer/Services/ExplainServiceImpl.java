@@ -32,22 +32,35 @@ public class ExplainServiceImpl
 
         String prompt =
                 """
-                        You are an expert software engineer.
+                        You are a senior software engineer and interview reviewer.
                         
-                        Analyze this code.
+                        TASK:
+                        Analyze the provided source code and return ONLY VALID JSON.
                         
-                        Rules:
-                        - Detect language automatically
-                        - Return ONLY valid JSON
-                        - No markdown
-                        - Detect DSA pattern
-                        - No explanation outside JSON
-                        - Estimate difficulty
-                        - Generate sample test cases
-                        - Explain line by line briefly with visuals
-                        - Review the code like a expert 
+                        STRICT RULES:
+                        1. Output MUST be valid JSON.
+                        2. Do NOT wrap JSON in markdown.
+                        3. Do NOT add comments.
+                        4. Every field MUST exist.
+                        5. Use empty string "" if unknown.
+                        6. Use [] for missing arrays.
+                        7. Keep explanations concise but useful.
+                        8. Never invent unavailable behavior.
+                        9. Infer language automatically.
+                        10. Base complexity on actual implementation.
                         
-                        Output:
+                        ANALYSIS ORDER:
+                        1. Detect language
+                        2. Understand functionality
+                        3. Identify DSA/design patterns
+                        4. Compute complexity
+                        5. Perform dry run
+                        6. Suggest optimizations
+                        7. Generate tests
+                        8. Explain lines
+                        9. Review code quality
+                        
+                        OUTPUT:
                         
                         {
                          "detectedLanguage":"",
@@ -56,69 +69,73 @@ public class ExplainServiceImpl
                          "spaceComplexity":"",
                          "dryRun":"",
                          "optimization":"",
+                        
                          "patternsUsed":[],
+                        
                          "confidence":0,
+                        
+                         "dsaPattern":"",
+                        
+                         "difficulty":"",
+                        
                          "lineExplanation":[
-                            {
-                              "line":0,
-                              "explanation":""
-                            }
-                          ],
-                          "codeScore":0,
+                           {
+                             "line":0,
+                             "explanation":""
+                           }
+                         ],
                         
-                          "readability":"",
+                         "testCases":[
+                           {
+                             "input":"",
+                             "output":"",
+                             "explanation":""
+                           }
+                         ],
                         
-                          "maintainability":"",
+                         "codeScore":0,
                         
-                          "interviewFeedback":"",
+                         "readability":"",
                         
-                          "issues":[
+                         "maintainability":"",
+                        
+                         "interviewFeedback":"",
+                        
+                         "issues":[
                            {
                              "severity":"",
                              "issue":"",
                              "suggestion":""
                            }
-                          ],
-                         "dsaPattern":"",
-                          "difficulty":"",
-                           "testCases":[
-                             {
-                               "input":"",
-                               "output":"",
-                               "explanation":""
-                             }
-                           ]
+                         ]
                         }
                         
-                        Evaluate:
-                        - readability
-                        - maintainability
-                        - naming
-                        - scalability
-                        - interview quality
+                        FIELD RULES:
                         
-                        Score:
-                        0–100
+                        summary:
+                        - Explain intent
+                        - Mention major logic
                         
-                        Severity:
-                        LOW
-                        MEDIUM
-                        HIGH
+                        timeComplexity:
+                        - Big O only
+                        - Mention dominant operation
                         
-                        Rules:
-                        - line numbers start from 1
-                        - skip blank lines
+                        spaceComplexity:
+                        - Include auxiliary memory only
                         
-                        Generate:
-                        - 3 realistic test cases
-                        - include edge cases
+                        dryRun:
+                        - Use a small realistic example
+                        
+                        optimization:
+                        - Suggest only meaningful improvements
                         
                         patternsUsed:
-                        - algorithms
-                        - design patterns
-                        - coding approaches
+                        - algorithm
+                        - design pattern
+                        - coding approach
                         
-                        DSA patterns examples:
+                        dsaPattern:
+                        Choose one:
                         Sliding Window
                         Two Pointers
                         HashMap
@@ -136,16 +153,49 @@ public class ExplainServiceImpl
                         Prefix Sum
                         Heap
                         Sorting
+                        None
                         
-                        Difficulty:
+                        difficulty:
                         Easy
                         Medium
                         Hard
                         
+                        lineExplanation:
+                        - line numbers start from 1
+                        - skip blanks
+                        - concise
+                        
+                        testCases:
+                        - exactly 3
+                        - include normal case
+                        - include edge case
+                        - include boundary case
+                        
+                        codeScore:
+                        0–100
+                        
+                        readability:
+                        Poor
+                        Average
+                        Good
+                        Excellent
+                        
+                        maintainability:
+                        Low
+                        Medium
+                        High
+                        
                         confidence:
                         0–100
                         
-                        Code:
+                        issues:
+                        severity:
+                        LOW
+                        MEDIUM
+                        HIGH
+                        
+                        CODE:
+                        
                         %s
                         """
                         .formatted(
