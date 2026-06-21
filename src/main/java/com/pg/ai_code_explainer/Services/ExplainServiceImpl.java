@@ -2,8 +2,10 @@ package com.pg.ai_code_explainer.Services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pg.ai_code_explainer.Client.AIClient;
 import com.pg.ai_code_explainer.DTO.*;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,9 @@ public class ExplainServiceImpl
         implements ExplainService {
 
     private final AIClient aiClient;
+
+    private final ObjectMapper mapper =
+            new ObjectMapper();
 
     public ExplainServiceImpl(
             AIClient aiClient
@@ -29,14 +34,19 @@ public class ExplainServiceImpl
                 """
                         You are an expert software engineer.
                         
-                        Analyze the code.
+                        Analyze this code.
                         
                         Rules:
                         - Detect language automatically
-                        - Explain code
-                        - Return ONLY JSON
+                        - Return ONLY valid JSON
                         - No markdown
-                        - No extra text
+                        - Detect DSA pattern
+                        - No explanation outside JSON
+                        - Estimate difficulty
+                        - Generate sample test cases
+                        - Explain line by line briefly with visuals
+                        
+                        Output:
                         
                         {
                          "detectedLanguage":"",
@@ -44,8 +54,65 @@ public class ExplainServiceImpl
                          "timeComplexity":"",
                          "spaceComplexity":"",
                          "dryRun":"",
-                         "optimization":""
+                         "optimization":"",
+                         "patternsUsed":[],
+                         "confidence":0,
+                         "lineExplanation":[
+                            {
+                              "line":0,
+                              "explanation":""
+                            }
+                          ],
+                         "dsaPattern":"",
+                          "difficulty":"",
+                           "testCases":[
+                             {
+                               "input":"",
+                               "output":"",
+                               "explanation":""
+                             }
+                           ]
                         }
+                        
+                        Rules:
+                        - line numbers start from 1
+                        - skip blank lines
+                        
+                        Generate:
+                        - 3 realistic test cases
+                        - include edge cases
+                        
+                        patternsUsed:
+                        - algorithms
+                        - design patterns
+                        - coding approaches
+                        
+                        DSA patterns examples:
+                        Sliding Window
+                        Two Pointers
+                        HashMap
+                        Binary Search
+                        Greedy
+                        DFS
+                        BFS
+                        DP
+                        Recursion
+                        Backtracking
+                        Graph
+                        Tree
+                        Stack
+                        Queue
+                        Prefix Sum
+                        Heap
+                        Sorting
+                        
+                        Difficulty:
+                        Easy
+                        Medium
+                        Hard
+                        
+                        confidence:
+                        0–100
                         
                         Code:
                         %s
@@ -91,6 +158,51 @@ public class ExplainServiceImpl
                         result
                                 .path("optimization")
                                 .asText()
+                )
+                .patternsUsed(
+                        mapper
+                                .convertValue(
+                                        result.path(
+                                                "patternsUsed"
+                                        ),
+                                        new com.fasterxml.jackson.core.type.TypeReference<java.util.List<String>>() {
+                                        }
+                                )
+                )
+                .confidence(
+                        result
+                                .path("confidence")
+                                .asInt()
+                )
+                .dsaPattern(
+                        result
+                                .path("dsaPattern")
+                                .asText()
+                )
+                .difficulty(
+                        result
+                                .path("difficulty")
+                                .asText()
+                )
+                .testCases(
+                        mapper.convertValue(
+                                result.path(
+                                        "testCases"
+                                ),
+                                new TypeReference<
+                                        java.util.List<TestCase>
+                                        >() {}
+                        )
+                )
+                .lineExplanation(
+                        mapper.convertValue(
+                                result.path(
+                                        "lineExplanation"
+                                ),
+                                new TypeReference<
+                                        java.util.List<LineExplanation>
+                                        >() {}
+                        )
                 )
                 .build();
 

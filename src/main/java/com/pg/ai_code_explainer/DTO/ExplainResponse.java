@@ -3,6 +3,8 @@ package com.pg.ai_code_explainer.DTO;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class ExplainResponse {
@@ -12,4 +14,15 @@ public class ExplainResponse {
     private String spaceComplexity;
     private String dryRun;
     private String optimization;
+
+    private List<String> patternsUsed;
+
+    private Integer confidence;
+
+    private String dsaPattern;
+
+    private String difficulty;
+    private List<TestCase> testCases;
+    private List<LineExplanation> lineExplanation;
+
 }
