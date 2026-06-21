@@ -27,9 +27,19 @@ public class ExplainServiceImpl
 
         String prompt =
                 """
-                        Return ONLY valid JSON.
+                        You are an expert software engineer.
+                        
+                        Analyze the code.
+                        
+                        Rules:
+                        - Detect language automatically
+                        - Explain code
+                        - Return ONLY JSON
+                        - No markdown
+                        - No extra text
                         
                         {
+                         "detectedLanguage":"",
                          "summary":"",
                          "timeComplexity":"",
                          "spaceComplexity":"",
@@ -52,6 +62,11 @@ public class ExplainServiceImpl
 
         return ExplainResponse
                 .builder()
+                .detectedLanguage(
+                        result
+                                .path("detectedLanguage")
+                                .asText()
+                )
                 .summary(
                         result
                                 .path("summary")
