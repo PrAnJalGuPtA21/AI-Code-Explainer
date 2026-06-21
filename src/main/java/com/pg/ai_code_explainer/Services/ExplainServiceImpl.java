@@ -45,6 +45,7 @@ public class ExplainServiceImpl
                         - Estimate difficulty
                         - Generate sample test cases
                         - Explain line by line briefly with visuals
+                        - Review the code like a expert 
                         
                         Output:
                         
@@ -63,6 +64,21 @@ public class ExplainServiceImpl
                               "explanation":""
                             }
                           ],
+                          "codeScore":0,
+                        
+                          "readability":"",
+                        
+                          "maintainability":"",
+                        
+                          "interviewFeedback":"",
+                        
+                          "issues":[
+                           {
+                             "severity":"",
+                             "issue":"",
+                             "suggestion":""
+                           }
+                          ],
                          "dsaPattern":"",
                           "difficulty":"",
                            "testCases":[
@@ -73,6 +89,21 @@ public class ExplainServiceImpl
                              }
                            ]
                         }
+                        
+                        Evaluate:
+                        - readability
+                        - maintainability
+                        - naming
+                        - scalability
+                        - interview quality
+                        
+                        Score:
+                        0–100
+                        
+                        Severity:
+                        LOW
+                        MEDIUM
+                        HIGH
                         
                         Rules:
                         - line numbers start from 1
@@ -191,7 +222,8 @@ public class ExplainServiceImpl
                                 ),
                                 new TypeReference<
                                         java.util.List<TestCase>
-                                        >() {}
+                                        >() {
+                                }
                         )
                 )
                 .lineExplanation(
@@ -201,7 +233,50 @@ public class ExplainServiceImpl
                                 ),
                                 new TypeReference<
                                         java.util.List<LineExplanation>
-                                        >() {}
+                                        >() {
+                                }
+                        )
+                )
+                .codeScore(
+                        result
+                                .path(
+                                        "codeScore"
+                                )
+                                .asInt()
+                )
+
+                .readability(
+                        result
+                                .path(
+                                        "readability"
+                                )
+                                .asText()
+                )
+
+                .maintainability(
+                        result
+                                .path(
+                                        "maintainability"
+                                )
+                                .asText()
+                )
+
+                .interviewFeedback(
+                        result
+                                .path(
+                                        "interviewFeedback"
+                                )
+                                .asText()
+                )
+                .issues(
+                        mapper.convertValue(
+                                result.path(
+                                        "issues"
+                                ),
+                                new TypeReference<
+                                        java.util.List<CodeIssue>
+                                        >() {
+                                }
                         )
                 )
                 .build();

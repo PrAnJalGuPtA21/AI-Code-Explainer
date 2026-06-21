@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 public class ExplainResponse {
     private String detectedLanguage;
-    private String summary ;
+    private String summary;
     private String timeComplexity;
     private String spaceComplexity;
     private String dryRun;
@@ -24,5 +24,13 @@ public class ExplainResponse {
     private String difficulty;
     private List<TestCase> testCases;
     private List<LineExplanation> lineExplanation;
+    private Integer codeScore;
 
+    private String readability;
+
+    private String maintainability;
+
+    private String interviewFeedback;
+
+    private java.util.List<CodeIssue> issues;
 }
